@@ -127,21 +127,21 @@ export default function Usuarios() {
       ) : (
         <div className="space-y-2">
           {usuarios.map(u => (
-            <div key={u.id} className="card flex items-center justify-between p-4">
-              <div className="flex items-center gap-3">
+            <div key={u.id} className="card flex items-center justify-between gap-3 p-3 sm:p-4">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${u.tipo === 'dono' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
                   {u.tipo === 'dono' ? <Shield size={18} /> : <User size={18} />}
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-900">{u.nome}</span>
-                    {u.id === user.id && <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">você</span>}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-medium text-gray-900 text-sm truncate">{u.nome}</span>
+                    {u.id === user.id && <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded shrink-0">você</span>}
                   </div>
-                  <p className="text-sm text-gray-400">{u.email}</p>
+                  <p className="text-xs text-gray-400 truncate">{u.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${u.tipo === 'dono' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`hidden sm:inline text-xs px-2.5 py-1 rounded-full font-medium ${u.tipo === 'dono' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
                   {u.tipo === 'dono' ? 'Dono' : 'Vendedor'}
                 </span>
                 <div className="flex gap-1">

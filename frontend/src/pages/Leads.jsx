@@ -466,9 +466,9 @@ export default function Leads() {
       </div>
 
       {/* Filtros */}
-      <div className="card p-4">
-        <div className="flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-48">
+      <div className="card p-3 md:p-4">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="relative flex-1 min-w-0 sm:min-w-48">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               className="input pl-9 text-sm"
@@ -478,13 +478,13 @@ export default function Leads() {
               onKeyDown={e => e.key === 'Enter' && load()}
             />
           </div>
-          <select className="input text-sm w-44" value={filtros.status}
+          <select className="input text-sm w-full sm:w-44" value={filtros.status}
             onChange={e => setFiltros(f => ({ ...f, status: e.target.value }))}>
             <option value="">Todos os status</option>
             {Object.entries(STATUS_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </select>
           {isDono && vendedores.length > 0 && (
-            <select className="input text-sm w-44" value={filtros.vendedor_id}
+            <select className="input text-sm w-full sm:w-44" value={filtros.vendedor_id}
               onChange={e => setFiltros(f => ({ ...f, vendedor_id: e.target.value }))}>
               <option value="">Todos vendedores</option>
               {vendedores.map(v => <option key={v.id} value={v.id}>{v.nome}</option>)}
@@ -507,7 +507,7 @@ export default function Leads() {
           <div className="text-center py-12 text-gray-400">Nenhum lead encontrado</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[700px]">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-100 text-left">
                   <th className="px-4 py-3 font-medium text-gray-500">Nome</th>

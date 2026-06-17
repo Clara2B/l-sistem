@@ -75,7 +75,7 @@ export default function Configuracoes() {
           <h2 className="font-semibold text-gray-900">Valor Investido</h2>
         </div>
         <p className="text-sm text-gray-500 mb-4">Informe o valor total investido em tráfego/marketing para calcular CPL e CPV no dashboard.</p>
-        <form onSubmit={salvarValor} className="flex gap-3 items-end">
+        <form onSubmit={salvarValor} className="flex flex-col sm:flex-row gap-3 sm:items-end">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
             <div className="relative">
@@ -90,7 +90,7 @@ export default function Configuracoes() {
               />
             </div>
           </div>
-          <button type="submit" className="btn-primary flex items-center gap-2" disabled={saving}>
+          <button type="submit" className="btn-primary flex items-center justify-center gap-2 sm:w-auto w-full" disabled={saving}>
             <Save size={16} /> Salvar
           </button>
         </form>
@@ -113,7 +113,7 @@ export default function Configuracoes() {
               <Lock size={16} className="text-gray-400" />
               <span className="text-sm font-medium text-gray-700">Alterar senha de acesso da empresa</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nova senha</label>
                 <input type="password" className="input" placeholder="Mínimo 6 caracteres" value={form.senha_empresa} onChange={set('senha_empresa')} />

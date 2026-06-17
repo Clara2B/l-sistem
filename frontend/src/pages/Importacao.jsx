@@ -70,14 +70,14 @@ export default function Importacao() {
       </div>
 
       {/* Progresso */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1 sm:gap-3 overflow-x-auto pb-1">
         {['upload', 'preview', 'done'].map((s, i) => (
-          <div key={s} className="flex items-center gap-2">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+          <div key={s} className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
               step === s ? 'bg-blue-600 text-white' : (['preview', 'done'].includes(step) && i === 0) || (step === 'done' && i === 1) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
             }`}>{i + 1}</div>
-            <span className="text-sm text-gray-600">{['Upload', 'Pré-visualizar', 'Concluído'][i]}</span>
-            {i < 2 && <div className="w-8 h-px bg-gray-200" />}
+            <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">{['Upload', 'Prévia', 'Concluído'][i]}</span>
+            {i < 2 && <div className="w-4 sm:w-8 h-px bg-gray-200 mx-1" />}
           </div>
         ))}
       </div>
@@ -85,7 +85,7 @@ export default function Importacao() {
       {step === 'upload' && (
         <div className="space-y-4">
           <div
-            className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors cursor-pointer ${dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
+            className={`border-2 border-dashed rounded-2xl p-6 sm:p-12 text-center transition-colors cursor-pointer ${dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
@@ -160,9 +160,9 @@ export default function Importacao() {
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <button onClick={confirmar} className="btn-primary flex items-center gap-2" disabled={loading}>
-              {loading ? 'Importando...' : <><Upload size={16} /> Confirmar Importação ({preview.total} leads)</>}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button onClick={confirmar} className="btn-primary flex items-center justify-center gap-2" disabled={loading}>
+              {loading ? 'Importando...' : <><Upload size={16} /> Confirmar ({preview.total} leads)</>}
             </button>
             <button onClick={resetar} className="btn-secondary">Cancelar</button>
           </div>
