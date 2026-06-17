@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f1f5f9;
+    color: #0f172a;
+  }
+}
+
+@layer utilities {
+  .brand-gradient {
+    background: linear-gradient(135deg, #1565F5 0%, #00D4F5 100%);
+  }
+  .brand-gradient-text {
+    background: linear-gradient(135deg, #1565F5 0%, #00D4F5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .brand-border {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+}
+
+@layer components {
+  /* Botão principal — gradiente da marca */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center font-semibold py-2 px-4 rounded-xl text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(135deg, #1565F5 0%, #00D4F5 100%);
+    box-shadow: 0 2px 12px rgba(21, 101, 245, 0.30);
+  }
+  .btn-primary:hover:not(:disabled) {
+    box-shadow: 0 4px 20px rgba(21, 101, 245, 0.45);
+    filter: brightness(1.08);
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-xl border border-gray-200 transition-colors duration-200;
+  }
+  .btn-danger {
+    @apply bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-xl transition-colors duration-200;
+  }
+
+  .input {
+    @apply w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none transition-all;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .input:focus {
+    border-color: #1565F5;
+    box-shadow: 0 0 0 3px rgba(21, 101, 245, 0.12);
+  }
+
+  .card {
+    @apply bg-white rounded-2xl p-6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  /* Status badges */
+  .badge-negociacao { @apply bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full; }
+  .badge-nao_atende { @apply bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-0.5 rounded-full; }
+  .badge-descarte   { @apply bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-0.5 rounded-full; }
+  .badge-venda      { @apply bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full; }
+}
