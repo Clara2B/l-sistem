@@ -6,11 +6,7 @@ const { initDB } = require('./src/database/db');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const corsOrigin = process.env.NODE_ENV === 'production'
-  ? (process.env.FRONTEND_URL || '*')
-  : true;
-
-app.use(cors({ origin: corsOrigin, credentials: true }));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
