@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function RegistrarEmpresa() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ nome: '', senha: '', nomeAdmin: '', emailAdmin: '', senhaAdmin: '' });
+  const [form, setForm] = useState({ nome: '', senha: '', tipo_operacao: 'vendas', nomeAdmin: '', emailAdmin: '', senhaAdmin: '' });
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
@@ -57,6 +57,14 @@ export default function RegistrarEmpresa() {
                 <div>
                   <label className={labelClass}>Senha de Acesso da Empresa</label>
                   <input type="password" className={inputClass} style={inputStyle} placeholder="Mínimo 6 caracteres" value={form.senha} onChange={set('senha')} />
+                </div>
+                <div>
+                  <label className={labelClass}>Tipo de Operação</label>
+                  <select className={inputClass} style={inputStyle} value={form.tipo_operacao} onChange={set('tipo_operacao')}>
+                    <option value="vendas">Apenas Vendas</option>
+                    <option value="recrutamento">Apenas Recrutamento</option>
+                    <option value="vendas_recrutamento">Vendas + Recrutamento</option>
+                  </select>
                 </div>
               </div>
             </div>
