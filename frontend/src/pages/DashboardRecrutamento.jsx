@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { Users, DollarSign, TrendingUp, Wallet, MessageCircle, Linkedin } from 'lucide-react';
+import { Users, DollarSign, TrendingUp, Wallet, MessageCircle, Link2 } from 'lucide-react';
 
 const fmt = n => (n ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 const fmtN = n => (n ?? 0).toLocaleString('pt-BR');
@@ -123,7 +123,7 @@ export default function DashboardRecrutamento() {
           <div className="space-y-3">
             {[
               { key: 'whatsapp', label: 'WhatsApp', Icon: MessageCircle, color: '#25d366', bg: 'bg-green-50 text-green-700' },
-              { key: 'linkedin', label: 'LinkedIn', Icon: Linkedin, color: '#0077b5', bg: 'bg-blue-50 text-blue-700' },
+              { key: 'linkedin', label: 'LinkedIn', Icon: Link2, color: '#0077b5', bg: 'bg-blue-50 text-blue-700' },
             ].map(({ key, label, Icon, color, bg }) => {
               const count = funil[key] || 0;
               const pct = totalFunil > 0 ? (count / totalFunil) * 100 : 0;
