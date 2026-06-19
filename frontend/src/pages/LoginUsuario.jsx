@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { User, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
+import { User, Lock, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginUsuario() {
   const { loginUsuario, empresa, logout } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', senha: '' });
   const [loading, setLoading] = useState(false);
+  const [showSenha, setShowSenha] = useState(false);
 
   useEffect(() => { if (!empresa) navigate('/'); }, [empresa, navigate]);
   if (!empresa) return null;
@@ -83,13 +84,17 @@ export default function LoginUsuario() {
               <div className="relative">
                 <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
                 <input
-                  type="password"
-                  className="w-full pl-9 pr-4 py-3 rounded-xl text-sm text-white placeholder-white/20 border border-white/10 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/15 transition-all"
+                  type={showSenha ? 'text' : 'password'}
+                  className="w-full pl-9 pr-10 py-3 rounded-xl text-sm text-white placeholder-white/20 border border-white/10 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/15 transition-all"
                   style={{ background: 'rgba(255,255,255,0.06)' }}
                   placeholder="••••••••"
                   value={form.senha}
                   onChange={e => setForm(f => ({ ...f, senha: e.target.value }))}
                 />
+                <button type="button" onClick={() => setShowSenha(s => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                  {showSenha ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
               </div>
             </div>
 

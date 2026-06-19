@@ -17,6 +17,7 @@ app.use('/api/dashboard',          require('./src/routes/dashboard'));
 app.use('/api/importar',           require('./src/routes/import'));
 app.use('/api/configuracoes',      require('./src/routes/config'));
 app.use('/api/candidatos',         require('./src/routes/candidatos'));
+app.use('/api/admin',              require('./src/routes/admin'));
 app.use('/api/recrutamento',       require('./src/routes/recrutamento'));
 app.use('/api/importar-candidatos', require('./src/routes/importarCandidatos'));
 

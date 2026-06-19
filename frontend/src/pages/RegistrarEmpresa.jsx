@@ -2,11 +2,37 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, ChevronDown } from 'lucide-react';
+
+function PasswordInput({ value, onChange, placeholder = 'Mínimo 6 caracteres', className, style }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <input
+        type={show ? 'text' : 'password'}
+        className={className}
+        style={style}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+      <button
+        type="button"
+        onClick={() => setShow(s => !s)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+      >
+        {show ? <EyeOff size={15} /> : <Eye size={15} />}
+      </button>
+    </div>
+  );
+}
 
 export default function RegistrarEmpresa() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ nome: '', senha: '', tipo_operacao: 'vendas', nomeAdmin: '', emailAdmin: '', senhaAdmin: '' });
+  const [form, setForm] = useState({
+    nome: '', senha: '', tipo_operacao: 'vendas',
+    nomeAdmin: '', emailAdmin: '', senhaAdmin: '',
+  });
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
@@ -33,6 +59,12 @@ export default function RegistrarEmpresa() {
   const inputStyle = { background: 'rgba(255,255,255,0.06)' };
   const labelClass = "block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5";
 
+  const TIPO_OPTIONS = [
+    { value: 'vendas',             label: 'Apenas Vendas' },
+    { value: 'recrutamento',       label: 'Apenas Recrutamento' },
+    { value: 'vendas_recrutamento', label: 'Vendas + Recrutamento' },
+  ];
+
   return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#050505' }}>
       <div className="w-full max-w-lg">
@@ -44,6 +76,7 @@ export default function RegistrarEmpresa() {
 
         <div className="rounded-2xl p-8 border border-white/8" style={{ background: 'rgba(255,255,255,0.04)' }}>
           <form onSubmit={handleSubmit} className="space-y-5">
+
             {/* Dados da empresa */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#00D4F5' }}>
@@ -56,20 +89,32 @@ export default function RegistrarEmpresa() {
                 </div>
                 <div>
                   <label className={labelClass}>Senha de Acesso da Empresa</label>
-                  <input type="password" className={inputClass} style={inputStyle} placeholder="Mínimo 6 caracteres" value={form.senha} onChange={set('senha')} />
+                  <PasswordInput value={form.senha} onChange={set('senha')} className={inputClass} style={inputStyle} />
                 </div>
                 <div>
                   <label className={labelClass}>Tipo de Operação</label>
-                  <select className={inputClass} style={inputStyle} value={form.tipo_operacao} onChange={set('tipo_operacao')}>
-                    <option value="vendas">Apenas Vendas</option>
-                    <option value="recrutamento">Apenas Recrutamento</option>
-                    <option value="vendas_recrutamento">Vendas + Recrutamento</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={form.tipo_operacao}
+                      onChange={set('tipo_operacao')}
+                      className="w-full appearance-none px-4 py-3 pr-10 rounded-xl text-sm text-white border border-white/10 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/15 transition-all cursor-pointer"
+                      style={{ background: 'rgba(255,255,255,0.06)' }}
+                    >
+                      {TIPO_OPTIONS.map(o => (
+                        <option key={o.value} value={o.value}
+                          style={{ background: '#1a1a2e', color: '#fff' }}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+                  </div>
+                  <p className="text-xs text-white/25 mt-1.5">Define quais módulos estarão disponíveis nesta empresa</p>
                 </div>
               </div>
             </div>
 
-            {/* Divisor */}
+            {/* Admin */}
             <div className="border-t border-white/8 pt-5">
               <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#00D4F5' }}>
                 Conta do Administrador
@@ -85,7 +130,7 @@ export default function RegistrarEmpresa() {
                 </div>
                 <div>
                   <label className={labelClass}>Senha</label>
-                  <input type="password" className={inputClass} style={inputStyle} placeholder="Mínimo 6 caracteres" value={form.senhaAdmin} onChange={set('senhaAdmin')} />
+                  <PasswordInput value={form.senhaAdmin} onChange={set('senhaAdmin')} className={inputClass} style={inputStyle} />
                 </div>
               </div>
             </div>

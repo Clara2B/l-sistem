@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Settings, DollarSign, Building2, Lock, Save, Briefcase } from 'lucide-react';
+import { Settings, DollarSign, Building2, Lock, Save, Briefcase, Eye, EyeOff, Download } from 'lucide-react';
 
 export default function Configuracoes() {
   const { empresa, refreshEmpresa } = useAuth();
@@ -20,6 +20,8 @@ export default function Configuracoes() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingRecru, setSavingRecru] = useState(false);
+  const [showSenha, setShowSenha] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     api.get('/configuracoes').then(({ data }) => {
@@ -98,6 +100,20 @@ export default function Configuracoes() {
     }
   }
 
+  async function exportarUsuarios() {
+    try {
+      const resp = await api.get('/admin/exportar-usuarios', { responseType: 'blob' });
+      const url = URL.createObjectURL(resp.data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = resp.headers['content-disposition']?.split('filename="')[1]?.replace('"','') || 'usuarios.xlsx';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error('Erro ao exportar');
+    }
+  }
+
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
   const setR = k => e => setRecruForm(f => ({ ...f, [k]: e.target.value }));
 
@@ -141,11 +157,21 @@ export default function Configuracoes() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nova senha</label>
-                <input type="password" className="input" placeholder="Mínimo 6 caracteres" value={form.senha_empresa} onChange={set('senha_empresa')} />
+                <div className="relative">
+                  <input type={showSenha ? 'text' : 'password'} className="input pr-9" placeholder="Mínimo 6 caracteres" value={form.senha_empresa} onChange={set('senha_empresa')} />
+                  <button type="button" onClick={() => setShowSenha(s => !s)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showSenha ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar senha</label>
-                <input type="password" className="input" placeholder="Repita a senha" value={form.confirmar_senha} onChange={set('confirmar_senha')} />
+                <div className="relative">
+                  <input type={showConfirm ? 'text' : 'password'} className="input pr-9" placeholder="Repita a senha" value={form.confirmar_senha} onChange={set('confirmar_senha')} />
+                  <button type="button" onClick={() => setShowConfirm(s => !s)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -227,6 +253,18 @@ export default function Configuracoes() {
           </form>
         </div>
       )}
+
+      {/* Exportar usuários */}
+      <div className="card">
+        <div className="flex items-center gap-2 mb-3">
+          <Download size={18} className="text-blue-600" />
+          <h2 className="font-semibold text-gray-900">Exportar Usuários</h2>
+        </div>
+        <p className="text-sm text-gray-500 mb-3">Baixe uma planilha com todos os usuários desta empresa.</p>
+        <button onClick={exportarUsuarios} className="btn-secondary flex items-center gap-2">
+          <Download size={15} /> Baixar planilha (.xlsx)
+        </button>
+      </div>
 
       {/* Info */}
       <div className="card bg-gray-50 border-gray-100">

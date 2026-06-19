@@ -140,7 +140,7 @@ export default function Dashboard() {
           </div>
 
           {/* Imposto da Meta */}
-          {resumo.cpl > 0 && (
+          {(
             <div className="card">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs font-bold uppercase tracking-wide text-amber-600">Imposto da Meta (12,75%)</span>
@@ -148,15 +148,15 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="text-center p-3 rounded-xl bg-gray-50">
                   <p className="text-[11px] text-gray-400 uppercase tracking-wide mb-1">CPL sem imposto</p>
-                  <p className="text-lg font-bold text-gray-900">R$ {fmt(resumo.cpl)}</p>
+                  <p className="text-lg font-bold text-gray-900">{resumo.cpl > 0 ? `R$ ${fmt(resumo.cpl)}` : '—'}</p>
                 </div>
                 <div className="text-center p-3 rounded-xl bg-amber-50">
                   <p className="text-[11px] text-amber-600 uppercase tracking-wide mb-1">Imposto (12,75%)</p>
-                  <p className="text-lg font-bold text-amber-700">R$ {fmt(+(resumo.cpl * 0.1275).toFixed(2))}</p>
+                  <p className="text-lg font-bold text-amber-700">{resumo.cpl > 0 ? `R$ ${fmt(+(resumo.cpl * 0.1275).toFixed(2))}` : '—'}</p>
                 </div>
                 <div className="text-center p-3 rounded-xl bg-red-50">
                   <p className="text-[11px] text-red-500 uppercase tracking-wide mb-1">CPL com imposto</p>
-                  <p className="text-lg font-bold text-red-600">R$ {fmt(+(resumo.cpl * 1.1275).toFixed(2))}</p>
+                  <p className="text-lg font-bold text-red-600">{resumo.cpl > 0 ? `R$ ${fmt(+(resumo.cpl * 1.1275).toFixed(2))}` : '—'}</p>
                 </div>
               </div>
             </div>

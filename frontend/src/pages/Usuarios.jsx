@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X, User, Shield, UserCog } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, User, Shield, UserCog, Eye, EyeOff } from 'lucide-react';
 
 const TIPO_LABELS = { dono: 'Dono', rh: 'RH', vendedor: 'Vendedor' };
 const TIPO_COLORS = {
@@ -34,6 +34,7 @@ function UsuarioForm({ usuario, onSave, onClose }) {
     tipo: usuario?.tipo || 'vendedor',
   });
   const [saving, setSaving] = useState(false);
+  const [showSenha, setShowSenha] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -72,7 +73,12 @@ function UsuarioForm({ usuario, onSave, onClose }) {
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">{usuario ? 'Nova senha (deixe em branco para manter)' : 'Senha *'}</label>
-        <input type="password" className="input" value={form.senha} onChange={set('senha')} placeholder="Mínimo 6 caracteres" />
+        <div className="relative">
+          <input type={showSenha ? 'text' : 'password'} className="input pr-9" value={form.senha} onChange={set('senha')} placeholder="Mínimo 6 caracteres" />
+          <button type="button" onClick={() => setShowSenha(s => !s)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            {showSenha ? <EyeOff size={15} /> : <Eye size={15} />}
+          </button>
+        </div>
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de acesso</label>
