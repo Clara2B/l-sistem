@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X, User, Shield } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, User, Shield, UserCog } from 'lucide-react';
+
+const TIPO_LABELS = { dono: 'Dono', rh: 'RH', vendedor: 'Vendedor' };
+const TIPO_COLORS = {
+  dono:    'bg-blue-100 text-blue-700',
+  rh:      'bg-green-100 text-green-700',
+  vendedor:'bg-gray-100 text-gray-600',
+};
 
 function Modal({ title, onClose, children }) {
   return (
@@ -19,11 +26,12 @@ function Modal({ title, onClose, children }) {
 }
 
 function UsuarioForm({ usuario, onSave, onClose }) {
+  const { hasVendas, hasRecrutamento } = useAuth();
   const [form, setForm] = useState({
     nome: usuario?.nome || '',
     email: usuario?.email || '',
     senha: '',
-    tipo: usuario?.tipo || 'funcionario',
+    tipo: usuario?.tipo || 'vendedor',
   });
   const [saving, setSaving] = useState(false);
 
@@ -69,8 +77,9 @@ function UsuarioForm({ usuario, onSave, onClose }) {
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de acesso</label>
         <select className="input" value={form.tipo} onChange={set('tipo')}>
-          <option value="funcionario">Funcionário / Vendedor</option>
-          <option value="dono">Dono (administrador)</option>
+          <option value="dono">Dono (administrador completo)</option>
+          {hasVendas    && <option value="vendedor">Vendedor (acesso a leads e vendas)</option>}
+          {hasRecrutamento && <option value="rh">RH (acesso a candidatos e recrutamento)</option>}
         </select>
       </div>
       <div className="flex gap-2 pt-1">
@@ -110,6 +119,12 @@ export default function Usuarios() {
     }
   }
 
+  const TipoIcon = ({ tipo }) => {
+    if (tipo === 'dono') return <Shield size={18} />;
+    if (tipo === 'rh') return <UserCog size={18} />;
+    return <User size={18} />;
+  };
+
   return (
     <div className="space-y-5 max-w-3xl">
       <div className="flex items-center justify-between">
@@ -129,8 +144,8 @@ export default function Usuarios() {
           {usuarios.map(u => (
             <div key={u.id} className="card flex items-center justify-between gap-3 p-3 sm:p-4">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${u.tipo === 'dono' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
-                  {u.tipo === 'dono' ? <Shield size={18} /> : <User size={18} />}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${u.tipo === 'dono' ? 'bg-blue-100 text-blue-600' : u.tipo === 'rh' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
+                  <TipoIcon tipo={u.tipo} />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -141,8 +156,8 @@ export default function Usuarios() {
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className={`hidden sm:inline text-xs px-2.5 py-1 rounded-full font-medium ${u.tipo === 'dono' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-                  {u.tipo === 'dono' ? 'Dono' : 'Vendedor'}
+                <span className={`hidden sm:inline text-xs px-2.5 py-1 rounded-full font-medium ${TIPO_COLORS[u.tipo]}`}>
+                  {TIPO_LABELS[u.tipo]}
                 </span>
                 <div className="flex gap-1">
                   <button onClick={() => setModal(u)} className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-lg"><Pencil size={15} /></button>

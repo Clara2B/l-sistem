@@ -18,8 +18,15 @@ export default function LoginUsuario() {
     if (!form.email || !form.senha) return toast.error('Preencha todos os campos');
     setLoading(true);
     try {
-      await loginUsuario(form.email, form.senha);
-      navigate('/dashboard');
+      const data = await loginUsuario(form.email, form.senha);
+      const tipo = data.usuario.tipo;
+      const tipoOp = empresa?.tipo_operacao || 'vendas';
+      // RH ou empresa só-recrutamento → dashboard recrutamento
+      if (tipo === 'rh' || tipoOp === 'recrutamento') {
+        navigate('/recrutamento/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       toast.error(err.response?.data?.error || 'Usuário ou senha inválidos');
     } finally {
@@ -29,7 +36,6 @@ export default function LoginUsuario() {
 
   return (
     <div className="min-h-screen flex" style={{ background: '#050505' }}>
-      {/* Lado esquerdo */}
       <div className="hidden lg:flex flex-col items-center justify-center flex-1 p-12">
         <img src="/logo.png" alt="B.BOTH" className="w-72 object-contain mb-8" />
         <p className="text-white/30 text-sm tracking-widest uppercase">Sistema de Gestão de Leads</p>
@@ -37,25 +43,17 @@ export default function LoginUsuario() {
 
       <div className="hidden lg:block w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(21,101,245,0.4), rgba(0,212,245,0.4), transparent)' }} />
 
-      {/* Lado direito */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12">
         <div className="lg:hidden mb-8">
           <img src="/logo.png" alt="B.BOTH" className="h-16 object-contain mx-auto" />
         </div>
 
         <div className="w-full max-w-sm">
-          {/* Badge empresa + trocar */}
           <div className="flex items-center gap-2 mb-6">
-            <span
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg"
-              style={{ background: 'rgba(21,101,245,0.2)', color: '#60b0ff' }}
-            >
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(21,101,245,0.2)', color: '#60b0ff' }}>
               {empresa.nome}
             </span>
-            <button
-              onClick={() => { logout(); navigate('/'); }}
-              className="text-xs text-white/30 hover:text-white/60 flex items-center gap-1 transition-colors"
-            >
+            <button onClick={() => { logout(); navigate('/'); }} className="text-xs text-white/30 hover:text-white/60 flex items-center gap-1 transition-colors">
               <ArrowLeft size={12} /> Trocar empresa
             </button>
           </div>

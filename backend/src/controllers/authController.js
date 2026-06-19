@@ -15,7 +15,10 @@ async function loginEmpresa(req, res) {
   }
 
   const token = jwt.sign({ empresa_id: empresa.id, nome: empresa.nome, etapa: 'empresa' }, JWT_SECRET, { expiresIn: '4h' });
-  res.json({ token, empresa: { id: empresa.id, nome: empresa.nome } });
+  res.json({
+    token,
+    empresa: { id: empresa.id, nome: empresa.nome, tipo_operacao: empresa.tipo_operacao }
+  });
 }
 
 async function loginUsuario(req, res) {
@@ -46,10 +49,13 @@ async function loginUsuario(req, res) {
 }
 
 async function registrarEmpresa(req, res) {
-  const { nome, senha, nomeAdmin, emailAdmin, senhaAdmin } = req.body;
+  const { nome, senha, nomeAdmin, emailAdmin, senhaAdmin, tipo_operacao } = req.body;
   if (!nome || !senha || !nomeAdmin || !emailAdmin || !senhaAdmin) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
   }
+
+  const tipoOp = ['vendas', 'recrutamento', 'vendas_recrutamento'].includes(tipo_operacao)
+    ? tipo_operacao : 'vendas';
 
   const { rows: existe } = await pool.query('SELECT id FROM empresas WHERE nome = $1', [nome]);
   if (existe.length) return res.status(409).json({ error: 'Empresa já cadastrada' });
@@ -62,9 +68,16 @@ async function registrarEmpresa(req, res) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    await client.query('INSERT INTO empresas (id, nome, senha_hash) VALUES ($1, $2, $3)', [empresaId, nome, senhaHash]);
-    await client.query('INSERT INTO usuarios (id, empresa_id, nome, email, senha_hash, tipo) VALUES ($1, $2, $3, $4, $5, $6)', [donoId, empresaId, nomeAdmin, emailAdmin, senhaAdminHash, 'dono']);
+    await client.query(
+      'INSERT INTO empresas (id, nome, senha_hash, tipo_operacao) VALUES ($1, $2, $3, $4)',
+      [empresaId, nome, senhaHash, tipoOp]
+    );
+    await client.query(
+      'INSERT INTO usuarios (id, empresa_id, nome, email, senha_hash, tipo) VALUES ($1, $2, $3, $4, $5, $6)',
+      [donoId, empresaId, nomeAdmin, emailAdmin, senhaAdminHash, 'dono']
+    );
     await client.query('INSERT INTO configuracoes (id, empresa_id) VALUES ($1, $2)', [uuidv4(), empresaId]);
+    await client.query('INSERT INTO recrutamento_config (id, empresa_id) VALUES ($1, $2)', [uuidv4(), empresaId]);
     await client.query('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');

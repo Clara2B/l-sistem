@@ -130,13 +130,38 @@ export default function Dashboard() {
         <MetricCard icon={ArrowUpRight} label="Ticket Médio" value={`R$ ${fmt(resumo.ticket_medio)}`} />
       </div>
 
-      {/* CPL / CPV / Investido — 1 col mobile, 3 cols desktop */}
+      {/* CPL / CPV / Investido */}
       {isDono && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <MetricCard icon={DollarSign} label="Valor Investido" value={`R$ ${fmt(resumo.valor_investido)}`} />
-          <MetricCard icon={Target} label="CPL" value={resumo.cpl > 0 ? `R$ ${fmt(resumo.cpl)}` : '—'} sub="Custo por lead" />
-          <MetricCard icon={Target} label="CPV" value={resumo.cpv > 0 ? `R$ ${fmt(resumo.cpv)}` : '—'} sub="Custo por venda" />
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <MetricCard icon={DollarSign} label="Valor Investido" value={`R$ ${fmt(resumo.valor_investido)}`} />
+            <MetricCard icon={Target} label="CPL" value={resumo.cpl > 0 ? `R$ ${fmt(resumo.cpl)}` : '—'} sub="Custo por lead" />
+            <MetricCard icon={Target} label="CPV" value={resumo.cpv > 0 ? `R$ ${fmt(resumo.cpv)}` : '—'} sub="Custo por venda" />
+          </div>
+
+          {/* Imposto da Meta */}
+          {resumo.cpl > 0 && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-bold uppercase tracking-wide text-amber-600">Imposto da Meta (12,75%)</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="text-center p-3 rounded-xl bg-gray-50">
+                  <p className="text-[11px] text-gray-400 uppercase tracking-wide mb-1">CPL sem imposto</p>
+                  <p className="text-lg font-bold text-gray-900">R$ {fmt(resumo.cpl)}</p>
+                </div>
+                <div className="text-center p-3 rounded-xl bg-amber-50">
+                  <p className="text-[11px] text-amber-600 uppercase tracking-wide mb-1">Imposto (12,75%)</p>
+                  <p className="text-lg font-bold text-amber-700">R$ {fmt(+(resumo.cpl * 0.1275).toFixed(2))}</p>
+                </div>
+                <div className="text-center p-3 rounded-xl bg-red-50">
+                  <p className="text-[11px] text-red-500 uppercase tracking-wide mb-1">CPL com imposto</p>
+                  <p className="text-lg font-bold text-red-600">R$ {fmt(+(resumo.cpl * 1.1275).toFixed(2))}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Gráficos */}

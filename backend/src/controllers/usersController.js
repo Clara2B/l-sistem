@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { pool } = require('../database/db');
 
+const TIPOS_VALIDOS = ['dono', 'rh', 'vendedor'];
+
 async function listarUsuarios(req, res) {
   const { empresa_id } = req.user;
   const { rows } = await pool.query(
@@ -15,7 +17,7 @@ async function criarUsuario(req, res) {
   const { empresa_id } = req.user;
   const { nome, email, senha, tipo } = req.body;
   if (!nome || !email || !senha || !tipo) return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
-  if (!['dono', 'funcionario'].includes(tipo)) return res.status(400).json({ error: 'Tipo inválido' });
+  if (!TIPOS_VALIDOS.includes(tipo)) return res.status(400).json({ error: 'Tipo inválido' });
 
   const { rows: existe } = await pool.query('SELECT id FROM usuarios WHERE empresa_id = $1 AND email = $2', [empresa_id, email]);
   if (existe.length) return res.status(409).json({ error: 'Email já cadastrado nesta empresa' });
@@ -43,7 +45,7 @@ async function editarUsuario(req, res) {
 
   if (nome)  { sets.push(`nome = $${i++}`);       values.push(nome); }
   if (email) { sets.push(`email = $${i++}`);      values.push(email); }
-  if (tipo && ['dono', 'funcionario'].includes(tipo)) { sets.push(`tipo = $${i++}`); values.push(tipo); }
+  if (tipo && TIPOS_VALIDOS.includes(tipo)) { sets.push(`tipo = $${i++}`); values.push(tipo); }
   if (senha) { sets.push(`senha_hash = $${i++}`); values.push(bcrypt.hashSync(senha, 10)); }
 
   if (!sets.length) return res.status(400).json({ error: 'Nenhum campo para atualizar' });

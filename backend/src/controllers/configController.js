@@ -3,16 +3,21 @@ const { pool } = require('../database/db');
 
 async function getConfig(req, res) {
   const { empresa_id } = req.user;
-  const [empresaRes, configRes] = await Promise.all([
-    pool.query('SELECT id, nome, criado_em FROM empresas WHERE id = $1', [empresa_id]),
+  const [empresaRes, configRes, recruRes] = await Promise.all([
+    pool.query('SELECT id, nome, tipo_operacao, criado_em FROM empresas WHERE id = $1', [empresa_id]),
     pool.query('SELECT * FROM configuracoes WHERE empresa_id = $1', [empresa_id]),
+    pool.query('SELECT * FROM recrutamento_config WHERE empresa_id = $1', [empresa_id]),
   ]);
-  res.json({ empresa: empresaRes.rows[0], config: configRes.rows[0] });
+  res.json({
+    empresa: empresaRes.rows[0],
+    config: configRes.rows[0],
+    recrutamento: recruRes.rows[0] || null,
+  });
 }
 
 async function updateConfig(req, res) {
   const { empresa_id } = req.user;
-  const { valor_investido, nome_empresa, senha_empresa } = req.body;
+  const { valor_investido, nome_empresa, senha_empresa, tipo_operacao } = req.body;
 
   if (valor_investido !== undefined) {
     await pool.query(
@@ -30,6 +35,10 @@ async function updateConfig(req, res) {
   if (senha_empresa) {
     const hash = bcrypt.hashSync(senha_empresa, 10);
     await pool.query('UPDATE empresas SET senha_hash = $1 WHERE id = $2', [hash, empresa_id]);
+  }
+
+  if (tipo_operacao && ['vendas', 'recrutamento', 'vendas_recrutamento'].includes(tipo_operacao)) {
+    await pool.query('UPDATE empresas SET tipo_operacao = $1 WHERE id = $2', [tipo_operacao, empresa_id]);
   }
 
   res.json({ message: 'Configurações atualizadas' });

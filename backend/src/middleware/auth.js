@@ -24,4 +24,18 @@ function donoOnly(req, res, next) {
   next();
 }
 
-module.exports = { authMiddleware, donoOnly, JWT_SECRET };
+function rhOnly(req, res, next) {
+  if (req.user.tipo !== 'rh' && req.user.tipo !== 'dono') {
+    return res.status(403).json({ error: 'Acesso restrito ao RH' });
+  }
+  next();
+}
+
+function vendedorOnly(req, res, next) {
+  if (req.user.tipo !== 'vendedor' && req.user.tipo !== 'dono') {
+    return res.status(403).json({ error: 'Acesso restrito a vendedores' });
+  }
+  next();
+}
+
+module.exports = { authMiddleware, donoOnly, rhOnly, vendedorOnly, JWT_SECRET };

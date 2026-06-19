@@ -11,6 +11,9 @@ import Leads from './pages/Leads';
 import Importacao from './pages/Importacao';
 import Usuarios from './pages/Usuarios';
 import Configuracoes from './pages/Configuracoes';
+import Candidatos from './pages/Candidatos';
+import DashboardRecrutamento from './pages/DashboardRecrutamento';
+import ImportacaoCandidatos from './pages/ImportacaoCandidatos';
 
 export default function App() {
   return (
@@ -22,9 +25,15 @@ export default function App() {
           <Route path="/login" element={<LoginUsuario />} />
           <Route path="/registrar" element={<RegistrarEmpresa />} />
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/leads" element={<Leads />} />
+            {/* Vendas */}
+            <Route path="/dashboard" element={<ProtectedRoute roles={['dono','vendedor']}><Dashboard /></ProtectedRoute>} />
+            <Route path="/leads" element={<ProtectedRoute roles={['dono','vendedor']}><Leads /></ProtectedRoute>} />
             <Route path="/importar" element={<ProtectedRoute donoOnly><Importacao /></ProtectedRoute>} />
+            {/* Recrutamento */}
+            <Route path="/recrutamento/dashboard" element={<ProtectedRoute roles={['dono','rh']}><DashboardRecrutamento /></ProtectedRoute>} />
+            <Route path="/recrutamento/candidatos" element={<ProtectedRoute roles={['dono','rh']}><Candidatos /></ProtectedRoute>} />
+            <Route path="/recrutamento/importar" element={<ProtectedRoute donoOnly><ImportacaoCandidatos /></ProtectedRoute>} />
+            {/* Admin */}
             <Route path="/usuarios" element={<ProtectedRoute donoOnly><Usuarios /></ProtectedRoute>} />
             <Route path="/configuracoes" element={<ProtectedRoute donoOnly><Configuracoes /></ProtectedRoute>} />
           </Route>
