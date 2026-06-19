@@ -82,6 +82,17 @@ async function initDB() {
       projecao_3 NUMERIC DEFAULT 300,
       atualizado_em TIMESTAMP DEFAULT NOW()
     );
+
+    CREATE TABLE IF NOT EXISTS credenciais_admin (
+      id TEXT PRIMARY KEY,
+      tipo TEXT NOT NULL,
+      referencia_id TEXT NOT NULL,
+      empresa_nome TEXT,
+      nome TEXT,
+      login TEXT NOT NULL,
+      senha TEXT NOT NULL,
+      atualizado_em TIMESTAMP DEFAULT NOW()
+    );
   `);
 
   // Migração v2: atualiza bancos existentes, limpa dados antigos, re-seed Demo
@@ -149,6 +160,19 @@ async function seedDemo(client) {
   await client.query(
     'INSERT INTO recrutamento_config (id, empresa_id) VALUES ($1, $2)',
     [uuidv4(), empresaId]
+  );
+  // Salva credenciais em texto para acesso admin
+  await client.query(
+    `INSERT INTO credenciais_admin (id, tipo, referencia_id, empresa_nome, nome, login, senha)
+     VALUES ($1,'empresa',$2,'Demo','Demo','Demo',$3)
+     ON CONFLICT DO NOTHING`,
+    [uuidv4(), empresaId, SENHA_EMPRESA]
+  );
+  await client.query(
+    `INSERT INTO credenciais_admin (id, tipo, referencia_id, empresa_nome, nome, login, senha)
+     VALUES ($1,'usuario',$2,'Demo','Administrador','dono@demo.com',$3)
+     ON CONFLICT DO NOTHING`,
+    [uuidv4(), donoId, SENHA_DONO]
   );
 
   console.log(`✅ Demo: empresa="Demo" senha="${SENHA_EMPRESA}" | email="${'dono@demo.com'}" senha="${SENHA_DONO}"`);

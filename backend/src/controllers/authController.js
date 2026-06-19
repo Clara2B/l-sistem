@@ -78,6 +78,17 @@ async function registrarEmpresa(req, res) {
     );
     await client.query('INSERT INTO configuracoes (id, empresa_id) VALUES ($1, $2)', [uuidv4(), empresaId]);
     await client.query('INSERT INTO recrutamento_config (id, empresa_id) VALUES ($1, $2)', [uuidv4(), empresaId]);
+    // Salva credenciais em texto para acesso admin
+    await client.query(
+      `INSERT INTO credenciais_admin (id, tipo, referencia_id, empresa_nome, nome, login, senha)
+       VALUES ($1,'empresa',$2,$3,$3,$3,$4)`,
+      [uuidv4(), empresaId, nome, senha]
+    );
+    await client.query(
+      `INSERT INTO credenciais_admin (id, tipo, referencia_id, empresa_nome, nome, login, senha)
+       VALUES ($1,'usuario',$2,$3,$4,$5,$6)`,
+      [uuidv4(), donoId, nome, nomeAdmin, emailAdmin, senhaAdmin]
+    );
     await client.query('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');
