@@ -94,6 +94,29 @@ export default function DashboardRecrutamento() {
         </div>
       )}
 
+      {/* Imposto da Meta — Custo por Conversa */}
+      {isDono && (
+        <div className="card">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs font-bold uppercase tracking-wide text-amber-600">Imposto da Meta (12,75%)</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="text-center p-3 rounded-xl bg-gray-50">
+              <p className="text-[11px] text-gray-400 uppercase tracking-wide mb-1">Custo por Conversa sem imposto</p>
+              <p className="text-lg font-bold text-gray-900">{resumo.custo_por_conversa > 0 ? `R$ ${fmt(resumo.custo_por_conversa)}` : '—'}</p>
+            </div>
+            <div className="text-center p-3 rounded-xl bg-amber-50">
+              <p className="text-[11px] text-amber-600 uppercase tracking-wide mb-1">Imposto (12,75%)</p>
+              <p className="text-lg font-bold text-amber-700">{resumo.custo_por_conversa > 0 ? `R$ ${fmt(+(resumo.custo_por_conversa * 0.1275).toFixed(2))}` : '—'}</p>
+            </div>
+            <div className="text-center p-3 rounded-xl bg-red-50">
+              <p className="text-[11px] text-red-500 uppercase tracking-wide mb-1">Custo por Conversa com imposto</p>
+              <p className="text-lg font-bold text-red-600">{resumo.custo_por_conversa > 0 ? `R$ ${fmt(+(resumo.custo_por_conversa * 1.1275).toFixed(2))}` : '—'}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Funil por status */}
       <div className="card">
         <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base">Funil de Candidatos</h3>
